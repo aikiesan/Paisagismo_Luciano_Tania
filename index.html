@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Luciano e Tania — Paisagismo</title>
+    <meta name="description" content="Projeto de paisagismo residencial desenvolvido por Tanus Saab e Gustavo Valencio com visualizações 3D por Lucas Nakamura Cerejo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Typography */
+            --font-serif: 'Cormorant Garamond', Georgia, serif;
+            --font-sans: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Type Scale */
+            --text-h1: 4rem;
+            --text-h2: 2.75rem;
+            --text-h3: 2rem;
+            --text-h4: 1.5rem;
+            --text-large: 1.15rem;
+            --text-base: 1rem;
+            --text-small: 0.875rem;
+
+            /* ── Concrete Tone Palette ── */
+            --color-bg:           #F3F2F0;   /* warm light concrete */
+            --color-bg-alt:       #EAEAE6;   /* slightly cooler concrete */
+            --color-card:         #F9F8F7;   /* near-white with warmth */
+            --color-border:       #D5D2CF;   /* concrete border */
+            --color-border-light: #E2E0DD;   /* lighter divider */
+
+            --color-text-primary:   #242220;  /* near-black, warm */
+            --color-text-secondary: #5A5754;  /* medium concrete gray */
+            --color-text-muted:     #8E8A87;  /* light concrete */
+
+            --color-accent:       #7C7673;   /* warm architectural gray */
+            --color-accent-light: #A6A2A0;   /* lighter accent */
+            --color-accent-dark:  #524F4D;   /* deep concrete */
+            --color-accent-gold:  #B0A598;   /* warm travertine */
+
+            /* Shadows */
+            --shadow-sm:    0 1px 2px 0 rgba(36, 34, 32, 0.05);
+            --shadow-md:    0 4px 12px -1px rgba(36, 34, 32, 0.09), 0 2px 4px -1px rgba(36, 34, 32, 0.04);
+            --shadow-lg:    0 10px 24px -3px rgba(36, 34, 32, 0.10), 0 4px 8px -2px rgba(36, 34, 32, 0.05);
+            --shadow-xl:    0 20px 40px -5px rgba(36, 34, 32, 0.12), 0 8px 16px -5px rgba(36, 34, 32, 0.06);
+            --shadow-2xl:   0 25px 50px -12px rgba(36, 34, 32, 0.30);
+            --shadow-hover: 0 20px 40px -10px rgba(36, 34, 32, 0.16), 0 8px 20px -5px rgba(36, 34, 32, 0.08);
+
+            /* Spacing (8px base) */
+            --space-2:  0.5rem;
+            --space-3:  0.75rem;
+            --space-4:  1rem;
+            --space-5:  1.5rem;
+            --space-6:  2rem;
+            --space-8:  3rem;
+            --space-10: 4rem;
+            --space-12: 6rem;
+            --space-16: 8rem;
+
+            /* Animation */
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast:   150ms;
+            --duration-normal: 300ms;
+            --duration-slow:   500ms;
+            --duration-slower: 700ms;
+
+            /* Layout */
+            --navbar-h: 68px;
+            --bottom-nav-h: 64px;
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --text-h1: 2.6rem;
+                --text-h2: 2rem;
+                --text-h3: 1.6rem;
+            }
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            line-height: 1.65;
+        }
+
+        @media (max-width: 768px) {
+            body { padding-bottom: var(--bottom-nav-h); }
+        }
+
+        /* ── Decorative Side Borders ── */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; bottom: 0;
+            width: 5px;
+            z-index: 9998;
+            background: linear-gradient(
+                180deg,
+                var(--color-accent-dark)  0%,
+                var(--color-accent)       35%,
+                var(--color-accent-light) 65%,
+                var(--color-accent)       85%,
+                var(--color-accent-dark)  100%
+            );
+            opacity: 0.22;
+            pointer-events: none;
+        }
+        body::before { left: 0; }
+        body::after  { right: 0; }
+
+        @media (max-width: 768px) {
+            body::before, body::after { width: 3px; }
+        }
+
+        /* ══════════════════════════════════════
+           TOP NAVIGATION
+        ══════════════════════════════════════ */
+        #navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--navbar-h);
+            background: rgba(243, 242, 240, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 1000;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(124, 118, 115, 0.18);
+            transition: background var(--duration-normal) var(--ease-smooth),
+                        box-shadow var(--duration-normal) var(--ease-smooth);
+        }
+
+        #navbar.scrolled {
+            background: rgba(243, 242, 240, 0.97);
+            box-shadow: 0 2px 24px rgba(36, 34, 32, 0.09);
+        }
+
+        .nav-logo {
+            height: 38px;
+            width: 38px;
+            object-fit: contain;
+            opacity: 0.82;
+            transition: opacity var(--duration-normal) var(--ease-smooth);
+            flex-shrink: 0;
+        }
+        .nav-logo:hover { opacity: 1; }
+
+        /* Desktop nav links */
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            transition: color var(--duration-normal) var(--ease-smooth);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0;
+            width: 0; height: 1px;
+            background: var(--color-accent);
+            transition: width var(--duration-normal) var(--ease-smooth);
+        }
+
+        .nav-links a:hover { color: var(--color-text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Credits — desktop only */
+        .nav-credits {
+            font-size: 0.7rem;
+            color: var(--color-text-muted);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            line-height: 1.5;
+            text-align: right;
+            max-width: 260px;
+            flex-shrink: 0;
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .nav-credits { display: block; }
+        }
+
+        /* Hamburger — tablet range only (769–1023px) */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--color-text-secondary);
+            transition: color var(--duration-fast) var(--ease-smooth);
+        }
+        .nav-toggle svg {
+            display: block;
+            width: 22px; height: 22px;
+        }
+        .nav-toggle:hover { color: var(--color-text-primary); }
+
+        @media (min-width: 769px) and (max-width: 1023px) {
+            .nav-toggle { display: block; }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: var(--navbar-h);
+                left: 0; right: 0;
+                background: rgba(243, 242, 240, 0.98);
+                backdrop-filter: blur(14px);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1.5rem 2rem;
+                gap: 1.25rem;
+                border-bottom: 1px solid var(--color-border);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .nav-links.active { display: flex; }
+        }
+
+        /* Mobile — bottom nav handles navigation, hide links */
+        @media (max-width: 768px) {
+            .nav-links  { display: none !important; }
+            .nav-toggle { display: none !important; }
+        }
+
+        /* ══════════════════════════════════════
+           PAGE-SECTION SYSTEM
+        ══════════════════════════════════════ */
+        .page-section { display: block; }
+
+        @media (max-width: 768px) {
+            .page-section          { display: none; }
+            .page-section.active   { display: block; }
+        }
+
+        /* ══════════════════════════════════════
+           HERO HEADER
+        ══════════════════════════════════════ */
+        header {
+            text-align: center;
+            padding: 10rem 2rem 7rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 68vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: var(--navbar-h);
+            background-color: var(--color-bg);
+        }
+
+        /* Background render */
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("public/images/renders/scene-01.webp");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.11;
+            z-index: 0;
+        }
+
+        /* Gradient veil */
+        header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(243, 242, 240, 0.94) 0%,
+                rgba(243, 242, 240, 0.80) 50%,
+                rgba(243, 242, 240, 0.94) 100%
+            );
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .header-eyebrow {
+            font-family: var(--font-sans);
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 0.30em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.75rem;
+        }
+
+        header h1 {
+            font-family: var(--font-serif);
+            font-size: var(--text-h1);
+            font-weight: 300;
+            letter-spacing: 0.22em;
+            color: var(--color-text-primary);
+            line-height: 1.1;
+        }
+
+        .header-accent {
+            width: 70px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            margin: 2.25rem auto;
+        }
+
+        header .subtitle {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            font-weight: 300;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.4rem;
+        }
+
+        header .location {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 6.5rem 1.5rem 5rem;
+                min-height: calc(100vh - var(--navbar-h) - var(--bottom-nav-h));
+                margin-top: var(--navbar-h);
+            }
+            header h1 { letter-spacing: 0.15em; }
+        }
+
+        /* ══════════════════════════════════════
+           PROJECT INTRO
+        ══════════════════════════════════════ */
+        .project-intro {
+            max-width: 840px;
+            margin: 0 auto;
+            padding: var(--space-16) var(--space-6) var(--space-12);
+            text-align: center;
+        }
+
+        .intro-container h2 {
+            font-family: var(--font-serif);
+            font-size: var(--text-h2);
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-8);
+            position: relative;
+            display: inline-block;
+        }
+
+        .intro-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: -14px; left: 50%;
+            transform: translateX(-50%);
+            width: 44px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+        }
+
+        .intro-container p {
+            font-size: 1.05rem;
+            line-height: 1.85;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-5);
+            text-align: left;
+            font-weight: 300;
+        }
+
+        .intro-container p:first-of-type {
+            color: var(--color-text-primary);
+            font-weight: 400;
+        }
+
+        /* ══════════════════════════════════════
+           SECTION HEADER (shared)
+        ══════════════════════════════════════ */
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-10);
+        }
+
+        .section-header h2 {
+            font-family: var(--font-serif);
+            font-size: var(--text-h2);
+            font-weight: 400;
+            letter-spacing: 0.07em;
+            color: var(--color-text-primary);
+            margin-bottom: 1.25rem;
+        }
+
+        .section-divider {
+            width: 44px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            margin: 0 auto;
+        }
+
+        /* ══════════════════════════════════════
+           SPECIES SECTION
+        ══════════════════════════════════════ */
+        .species-section {
+            background-color: var(--color-bg-alt);
+            padding: var(--space-16) var(--space-6);
+        }
+
+        .species-placeholder {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--color-card);
+            border-radius: 12px;
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .species-placeholder p {
+            font-size: 1.05rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* ══════════════════════════════════════
+           FLOOR PLANS SECTION
+        ══════════════════════════════════════ */
+        .plans-section {
+            background-color: var(--color-bg);
+            padding: var(--space-16) var(--space-6);
+        }
+
+        .plans-grid {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-6);
+        }
+
+        /* ══════════════════════════════════════
+           GALLERY — 3D RENDERS
+        ══════════════════════════════════════ */
+        .gallery-section {
+            background-color: var(--color-bg-alt);
+            padding: var(--space-16) var(--space-6);
+        }
+
+        .gallery-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-5);
+        }
+
+        @media (min-width: 600px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 1440px) {
+            .gallery-grid { gap: var(--space-6); }
+        }
+
+        .gallery-item {
+            position: relative;
+            cursor: zoom-in;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border-light);
+            transition:
+                transform  var(--duration-normal) var(--ease-smooth),
+                box-shadow var(--duration-normal) var(--ease-smooth);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.025);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+            transition: transform var(--duration-slow) var(--ease-expo);
+        }
+
+        .gallery-item:hover img { transform: scale(1.05); }
+
+        /* ══════════════════════════════════════
+           FOOTER
+        ══════════════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: var(--space-12) var(--space-6) var(--space-10);
+            background: linear-gradient(180deg, var(--color-text-primary) 0%, #131211 100%);
+            color: var(--color-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+        }
+
+        footer p {
+            color: rgba(243, 242, 240, 0.65);
+            margin-bottom: var(--space-3);
+            font-weight: 300;
+            font-size: 0.9rem;
+            letter-spacing: 0.03em;
+        }
+
+        footer p:last-child {
+            font-size: var(--text-small);
+            color: rgba(243, 242, 240, 0.35);
+        }
+
+        /* ══════════════════════════════════════
+           LIGHTBOX
+        ══════════════════════════════════════ */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background-color: rgba(36, 34, 32, 0.96);
+            backdrop-filter: blur(10px);
+            cursor: zoom-out;
+        }
+
+        .lightbox-content {
+            display: block;
+            max-width: 90vw;
+            max-height: 90vh;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: var(--shadow-2xl);
+            border-radius: 4px;
+            animation: lightboxZoom var(--duration-normal) var(--ease-expo) both;
+        }
+
+        @keyframes lightboxZoom {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px; right: 28px;
+            color: rgba(243, 242, 240, 0.9);
+            font-size: 1.75rem;
+            cursor: pointer;
+            z-index: 10000;
+            background: rgba(243, 242, 240, 0.10);
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition:
+                background  var(--duration-fast) var(--ease-smooth),
+                transform   var(--duration-fast) var(--ease-smooth);
+        }
+
+        .lightbox-close:hover {
+            background: rgba(243, 242, 240, 0.22);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            color: rgba(243, 242, 240, 0.88);
+            font-size: 0.85rem;
+            text-align: center;
+            background: rgba(36, 34, 32, 0.72);
+            padding: 8px 20px;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            font-weight: 300;
+        }
+
+        /* ══════════════════════════════════════
+           SCROLL PROGRESS BAR
+        ══════════════════════════════════════ */
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg,
+                var(--color-accent-dark),
+                var(--color-accent),
+                var(--color-accent-gold));
+            z-index: 9999;
+            transition: width 0.1s linear;
+            pointer-events: none;
+        }
+
+        /* ══════════════════════════════════════
+           BOTTOM NAVIGATION — MOBILE
+        ══════════════════════════════════════ */
+        #bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--bottom-nav-h);
+            background: rgba(249, 248, 247, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(124, 118, 115, 0.20);
+            z-index: 1001;
+            align-items: stretch;
+            box-shadow: 0 -4px 24px rgba(36, 34, 32, 0.09);
+        }
+
+        @media (max-width: 768px) {
+            #bottom-nav { display: flex; }
+        }
+
+        .bottom-nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-muted);
+            font-size: 0.58rem;
+            font-family: var(--font-sans);
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 8px 4px;
+            transition: color var(--duration-normal) var(--ease-smooth);
+            position: relative;
+        }
+
+        .bottom-nav-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: var(--color-accent);
+            border-radius: 0 0 3px 3px;
+            transition: width var(--duration-normal) var(--ease-expo);
+        }
+
+        .bottom-nav-btn.active {
+            color: var(--color-accent-dark);
+        }
+
+        .bottom-nav-btn.active::after {
+            width: 28px;
+        }
+
+        .bottom-nav-btn svg {
+            width: 21px; height: 21px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke var(--duration-normal) var(--ease-smooth);
+        }
+
+        /* ══════════════════════════════════════
+           FADE-IN ANIMATIONS
+        ══════════════════════════════════════ */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(22px);
+            transition:
+                opacity   var(--duration-slower) var(--ease-expo),
+                transform var(--duration-slower) var(--ease-expo);
+        }
+
+        .fade-in-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- ═══════════════════════════════════════
+         TOP NAVIGATION
+    ════════════════════════════════════════ -->
+    <nav id="navbar">
+        <img src="logo_tanus_saab.png" alt="Tanus Saab Paisagismo" class="nav-logo">
+
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <line x1="3" y1="7.5" x2="21" y2="7.5"/>
+                <line x1="3" y1="16.5" x2="21" y2="16.5"/>
+            </svg>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#page-especies"  onclick="return handleNavLink('especies')">Espécies</a></li>
+            <li><a href="#page-plantas"   onclick="return handleNavLink('plantas')">Planta Baixa</a></li>
+            <li><a href="#page-renders"   onclick="return handleNavLink('renders')">Visualizações 3D</a></li>
+        </ul>
+
+        <div class="nav-credits">
+            Tanus Saab &amp; Gustavo Valencio<br>
+            3D: Lucas Nakamura
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════
+         PAGE 1 — INÍCIO
+    ════════════════════════════════════════ -->
+    <div class="page-section active" id="page-inicio">
+
+        <!-- Hero -->
+        <header>
+            <div class="header-content">
+                <div class="header-eyebrow">Projeto de Paisagismo Residencial</div>
+                <h1>LUCIANO E TANIA</h1>
+                <div class="header-accent"></div>
+                <p class="subtitle">Projeto de paisagismo residencial</p>
+            </div>
+        </header>
+
+        <!-- Introduction -->
+        <section class="project-intro">
+            <div class="intro-container">
+                <h2>Sobre o Projeto</h2>
+                <p>
+                    Projeto de paisagismo residencial desenvolvido com atenção especial à
+                    seleção de espécies e ao design dos espaços externos. O projeto combina
+                    funcionalidade e estética, criando ambientes que promovem o bem-estar
+                    e a conexão com a natureza.
+                </p>
+                <p>
+                    As visualizações 3D apresentadas permitem uma compreensão detalhada
+                    do projeto, mostrando a distribuição das plantas, os materiais
+                    especificados e a atmosfera que será criada nos espaços externos.
+                </p>
+            </div>
+        </section>
+
+    </div><!-- /page-inicio -->
+
+    <!-- ═══════════════════════════════════════
+         PAGE 2 — ESPÉCIES
+    ════════════════════════════════════════ -->
+    <div class="page-section" id="page-especies">
+
+        <section class="species-section">
+            <div class="section-header">
+                <h2>Espécies Selecionadas</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="species-placeholder">
+                <p>
+                    A seleção de espécies vegetais será disponibilizada em breve.<br>
+                    Esta seção será atualizada com imagens e informações detalhadas sobre cada planta do projeto.
+                </p>
+            </div>
+
+        </section>
+
+    </div><!-- /page-especies -->
+
+    <!-- ═══════════════════════════════════════
+         PAGE 3 — PLANTA BAIXA
+    ════════════════════════════════════════ -->
+    <div class="page-section" id="page-plantas">
+
+        <section class="plans-section">
+            <div class="section-header">
+                <h2>Planta Baixa 2D</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="plans-grid">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/plans/thumbs/PLANTA_2D_LUCIANO.webp"
+                         data-full="public/images/plans/PLANTA_2D_LUCIANO.webp"
+                         alt="Planta Baixa — Paisagismo Luciano e Tania" loading="lazy" decoding="async">
+                </div>
+            </div>
+
+        </section>
+
+    </div><!-- /page-plantas -->
+
+    <!-- ═══════════════════════════════════════
+         PAGE 4 — VISUALIZAÇÕES 3D
+    ════════════════════════════════════════ -->
+    <div class="page-section" id="page-renders">
+
+        <section class="gallery-section">
+            <div class="section-header">
+                <h2>Visualizações 3D</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-01.webp" data-full="public/images/renders/scene-01.webp" alt="Vista 3D — Cena 1" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-02.webp" data-full="public/images/renders/scene-02.webp" alt="Vista 3D — Cena 2" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-03.webp" data-full="public/images/renders/scene-03.webp" alt="Vista 3D — Cena 3" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-04.webp" data-full="public/images/renders/scene-04.webp" alt="Vista 3D — Cena 4" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-05.webp" data-full="public/images/renders/scene-05.webp" alt="Vista 3D — Cena 5" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-06.webp" data-full="public/images/renders/scene-06.webp" alt="Vista 3D — Cena 6" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-07.webp" data-full="public/images/renders/scene-07.webp" alt="Vista 3D — Cena 7" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-08.webp" data-full="public/images/renders/scene-08.webp" alt="Vista 3D — Cena 8" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-09.webp" data-full="public/images/renders/scene-09.webp" alt="Vista 3D — Cena 9" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-10.webp" data-full="public/images/renders/scene-10.webp" alt="Vista 3D — Cena 10" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-11.webp" data-full="public/images/renders/scene-11.webp" alt="Vista 3D — Cena 11" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-12.webp" data-full="public/images/renders/scene-12.webp" alt="Vista 3D — Cena 12" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-13.webp" data-full="public/images/renders/scene-13.webp" alt="Vista 3D — Cena 13" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-14.webp" data-full="public/images/renders/scene-14.webp" alt="Vista 3D — Cena 14" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-15.webp" data-full="public/images/renders/scene-15.webp" alt="Vista 3D — Cena 15" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-16.webp" data-full="public/images/renders/scene-16.webp" alt="Vista 3D — Cena 16" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-17.webp" data-full="public/images/renders/scene-17.webp" alt="Vista 3D — Cena 17" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-18.webp" data-full="public/images/renders/scene-18.webp" alt="Vista 3D — Cena 18" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-19.webp" data-full="public/images/renders/scene-19.webp" alt="Vista 3D — Cena 19" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-20.webp" data-full="public/images/renders/scene-20.webp" alt="Vista 3D — Cena 20" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-21.webp" data-full="public/images/renders/scene-21.webp" alt="Vista 3D — Cena 21" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-22.webp" data-full="public/images/renders/scene-22.webp" alt="Vista 3D — Cena 22" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-23.webp" data-full="public/images/renders/scene-23.webp" alt="Vista 3D — Cena 23" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-24.webp" data-full="public/images/renders/scene-24.webp" alt="Vista 3D — Cena 24" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-25.webp" data-full="public/images/renders/scene-25.webp" alt="Vista 3D — Cena 25" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-26.webp" data-full="public/images/renders/scene-26.webp" alt="Vista 3D — Cena 26" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-27.webp" data-full="public/images/renders/scene-27.webp" alt="Vista 3D — Cena 27" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-28.webp" data-full="public/images/renders/scene-28.webp" alt="Vista 3D — Cena 28" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-29.webp" data-full="public/images/renders/scene-29.webp" alt="Vista 3D — Cena 29" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-30.webp" data-full="public/images/renders/scene-30.webp" alt="Vista 3D — Cena 30" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-31.webp" data-full="public/images/renders/scene-31.webp" alt="Vista 3D — Cena 31" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-32.webp" data-full="public/images/renders/scene-32.webp" alt="Vista 3D — Cena 32" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-33.webp" data-full="public/images/renders/scene-33.webp" alt="Vista 3D — Cena 33" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-34.webp" data-full="public/images/renders/scene-34.webp" alt="Vista 3D — Cena 34" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-35.webp" data-full="public/images/renders/scene-35.webp" alt="Vista 3D — Cena 35" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-36.webp" data-full="public/images/renders/scene-36.webp" alt="Vista 3D — Cena 36" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-37.webp" data-full="public/images/renders/scene-37.webp" alt="Vista 3D — Cena 37" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-38.webp" data-full="public/images/renders/scene-38.webp" alt="Vista 3D — Cena 38" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-39.webp" data-full="public/images/renders/scene-39.webp" alt="Vista 3D — Cena 39" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-40.webp" data-full="public/images/renders/scene-40.webp" alt="Vista 3D — Cena 40" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-41.webp" data-full="public/images/renders/scene-41.webp" alt="Vista 3D — Cena 41" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-42.webp" data-full="public/images/renders/scene-42.webp" alt="Vista 3D — Cena 42" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-43.webp" data-full="public/images/renders/scene-43.webp" alt="Vista 3D — Cena 43" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-44.webp" data-full="public/images/renders/scene-44.webp" alt="Vista 3D — Cena 44" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-45.webp" data-full="public/images/renders/scene-45.webp" alt="Vista 3D — Cena 45" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="public/images/renders/thumbs/scene-46.webp" data-full="public/images/renders/scene-46.webp" alt="Vista 3D — Cena 46" loading="lazy" decoding="async">
+                </div>
+            </div><!-- /gallery-grid -->
+        </section>
+
+        <footer>
+            <p>Projeto de Paisagismo: Tanus Saab e Gustavo Valencio &nbsp;|&nbsp; Visualizações 3D: Lucas Nakamura Cerejo</p>
+            <p>&copy; 2026 Projeto Luciano e Tania — Todos os direitos reservados.</p>
+        </footer>
+
+    </div><!-- /page-renders -->
+
+    <!-- ═══════════════════════════════════════
+         LIGHTBOX MODAL
+    ════════════════════════════════════════ -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close" title="Fechar">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" alt="">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         BOTTOM NAVIGATION — MOBILE ONLY
+    ════════════════════════════════════════ -->
+    <nav id="bottom-nav" aria-label="Navegação principal">
+
+        <!-- Início -->
+        <button class="bottom-nav-btn active" data-page="inicio" onclick="switchPage('inicio')" aria-label="Início">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10.5z"/>
+                <polyline points="9 21 9 13 15 13 15 21"/>
+            </svg>
+            Início
+        </button>
+
+        <!-- Espécies -->
+        <button class="bottom-nav-btn" data-page="especies" onclick="switchPage('especies')" aria-label="Espécies">
+            <svg viewBox="0 0 24 24">
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2-8 2"/>
+                <path d="M7 14c0 0 1.5-3 5-4"/>
+            </svg>
+            Espécies
+        </button>
+
+        <!-- Planta Baixa -->
+        <button class="bottom-nav-btn" data-page="plantas" onclick="switchPage('plantas')" aria-label="Planta Baixa">
+            <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="3" y1="15" x2="21" y2="15"/>
+                <line x1="9" y1="9" x2="9" y2="21"/>
+                <line x1="15" y1="9" x2="15" y2="21"/>
+            </svg>
+            Planta 2D
+        </button>
+
+        <!-- Renders 3D -->
+        <button class="bottom-nav-btn" data-page="renders" onclick="switchPage('renders')" aria-label="Visualizações 3D">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>
+            </svg>
+            Renders 3D
+        </button>
+
+    </nav>
+
+    <!-- ═══════════════════════════════════════
+         JAVASCRIPT
+    ════════════════════════════════════════ -->
+    <script>
+        /* ── Page-section switching (mobile) ── */
+        function switchPage(pageId) {
+            // Deactivate all sections
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+
+            // Activate target
+            const target = document.getElementById('page-' + pageId);
+            if (target) {
+                target.classList.add('active');
+                // Trigger fade-ins for newly visible elements
+                target.querySelectorAll('.fade-in-element:not(.is-visible)').forEach(el => {
+                    el.classList.add('is-visible');
+                });
+            }
+
+            // Update bottom nav state
+            document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === pageId);
+            });
+
+            // Scroll to top of page
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        /* ── Top nav link handler ── */
+        function handleNavLink(pageId) {
+            if (window.innerWidth <= 768) {
+                switchPage(pageId);
+                return false; // prevent anchor scroll on mobile
+            }
+            // Close tablet hamburger menu
+            document.getElementById('navLinks').classList.remove('active');
+            return true; // allow normal anchor scroll on desktop / tablet
+        }
+
+        /* ── Lightbox ── */
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            const lb  = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src     = img.getAttribute('data-full') || img.src;
+            document.getElementById('lightbox-img').alt     = img.alt;
+            document.getElementById('lightbox-caption').textContent = img.alt;
+            lb.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        /* ── Scroll: progress bar + navbar ── */
+        window.addEventListener('scroll', () => {
+            const total = document.documentElement.scrollHeight - window.innerHeight;
+            const pct   = total > 0 ? (window.pageYOffset / total) * 100 : 0;
+            document.getElementById('scrollProgress').style.width = pct + '%';
+            document.getElementById('navbar').classList.toggle('scrolled', window.pageYOffset > 60);
+        }, { passive: true });
+
+        /* ── Hero parallax (desktop only) ── */
+        let rafPending = false;
+        window.addEventListener('scroll', () => {
+            if (!rafPending) {
+                requestAnimationFrame(() => {
+                    if (window.innerWidth > 768) {
+                        const hdr = document.querySelector('header');
+                        const s   = window.pageYOffset;
+                        if (hdr && s < 700) {
+                            hdr.style.transform = `translateY(${s * 0.28}px)`;
+                            hdr.style.opacity   = (1 - s / 700).toFixed(3);
+                        }
+                    }
+                    rafPending = false;
+                });
+                rafPending = true;
+            }
+        }, { passive: true });
+
+        /* ── Intersection Observer for fade-in ── */
+        const fadeObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('is-visible');
+                    fadeObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const targets = document.querySelectorAll(
+                '.gallery-item, .intro-container, .section-header, .header-content, .species-placeholder'
+            );
+            targets.forEach(el => {
+                el.classList.add('fade-in-element');
+                fadeObs.observe(el);
+            });
+
+            // On mobile: immediately reveal active-page elements
+            if (window.innerWidth <= 768) {
+                document.querySelectorAll('.page-section.active .fade-in-element').forEach(el => {
+                    el.classList.add('is-visible');
+                });
+            }
+        });
+
+        /* ── Tablet hamburger ── */
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        /* ── Resize: reveal all sections on desktop ── */
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.querySelectorAll('.page-section').forEach(s => {
+                    s.querySelectorAll('.fade-in-element').forEach(el => el.classList.add('is-visible'));
+                });
+            }
+        }, { passive: true });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Design Source Files
+*.skp
+*.skb
+*.dwg
+*.bak
+*.psd
+*.ai
+
+# Office Documents
+*.pptx
+*.xlsx
+*.docx
+
+# Original unprocessed images
+IMAGENS_WEBP_PREVIAS_RENDER_3D/
+PLANTA_2D_PROJETO_LUCIANO.webp
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+~$*
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude local settings
+.claude/
